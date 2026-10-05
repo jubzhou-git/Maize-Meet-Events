@@ -7,10 +7,12 @@ import EmptyState from '../components/EmptyState';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { getSavedEvents } from '../db/database';
 import { useAppContext } from '../context/AppContext';
+import { CARD_LAYOUTS } from '../storage/preferences';
 import { colors } from '../theme/theme';
 
 export default function SavedScreen({ navigation }) {
-  const { savedEventIds, toggleSaved } = useAppContext();
+  const { savedEventIds, toggleSaved, preferences } = useAppContext();
+  const compact = preferences.cardLayout === CARD_LAYOUTS.compact;
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +39,7 @@ export default function SavedScreen({ navigation }) {
       <FlatList
         contentContainerStyle={displayedEvents.length ? styles.list : styles.emptyList}
         data={displayedEvents}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ItemSeparatorComponent={() => <View style={compact ? styles.compactSeparator : styles.separator} />}
         keyExtractor={(item, index) => `${item.id}-${index}`}
         ListEmptyComponent={
           <EmptyState
@@ -47,6 +49,7 @@ export default function SavedScreen({ navigation }) {
         }
         renderItem={({ item }) => (
           <EventCard
+            compact={compact}
             event={item}
             saved={savedEventIds.includes(item.id)}
             onPress={() => navigation.navigate('EventDetails', { eventId: item.id })}
@@ -66,4 +69,5 @@ const styles = StyleSheet.create({
   list: { paddingBottom: 28, paddingHorizontal: 20, paddingTop: 18 },
   emptyList: { flexGrow: 1 },
   separator: { height: 12 },
+  compactSeparator: { height: 8 },
 });

@@ -17,3 +17,11 @@ export function formatEventTime(startsAt, endsAt) {
 export function formatFullEventDate(startsAt, endsAt) {
   return `${formatEventDate(startsAt)} · ${formatEventTime(startsAt, endsAt)}`;
 }
+
+export function formatEventMonthDay(startsAt) {
+  const date = new Date(startsAt);
+  return {
+    month: new Intl.DateTimeFormat(undefined, { month: 'short' }).format(date),
+    day: new Intl.DateTimeFormat(undefined, { day: 'numeric' }).format(date),
+  };
+}

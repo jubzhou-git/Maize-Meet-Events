@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getEvents, getSavedEventIds, toggleSavedEvent } from '../db/database';
-import { getPreferences } from '../storage/preferences';
+import { defaultPreferences, getPreferences } from '../storage/preferences';
 
 const AppContext = createContext(null);
 
@@ -8,9 +8,7 @@ export function AppContextProvider({ children, initialSession }) {
   const [session, setSession] = useState(initialSession);
   const [events, setEvents] = useState([]);
   const [savedEventIds, setSavedEventIds] = useState([]);
-  const [preferences, setPreferences] = useState({
-    darkTheme: false,
-  });
+  const [preferences, setPreferences] = useState(defaultPreferences);
 
   useEffect(() => {
     getEvents().then(setEvents);

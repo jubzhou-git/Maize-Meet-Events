@@ -5,7 +5,13 @@ import { Button, ListItem, Switch, Text } from '@rneui/themed';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppContext } from '../context/AppContext';
 import { clearSession } from '../services/session';
-import { resetPreferences, setDarkTheme } from '../storage/preferences';
+import {
+  CARD_LAYOUTS,
+  defaultPreferences,
+  resetPreferences,
+  setCardLayout,
+  setDarkTheme,
+} from '../storage/preferences';
 import { colors } from '../theme/theme';
 
 function SettingRow({ icon, title, description, value, onChange }) {
@@ -18,7 +24,12 @@ function SettingRow({ icon, title, description, value, onChange }) {
         <ListItem.Title style={styles.rowTitle}>{title}</ListItem.Title>
         <ListItem.Subtitle style={styles.rowDescription}>{description}</ListItem.Subtitle>
       </ListItem.Content>
-      <Switch onValueChange={onChange} value={value} />
+      <Switch
+        accessibilityHint={description}
+        accessibilityLabel={title}
+        onValueChange={onChange}
+        value={value}
+      />
     </ListItem>
   );
 }
@@ -32,6 +43,12 @@ export default function SettingsScreen({ navigation }) {
     setDarkTheme(value).catch(() => setMessage('Could not save your preference.'));
   }
 
+  function changeCompactCards(value) {
+    const cardLayout = value ? CARD_LAYOUTS.compact : CARD_LAYOUTS.standard;
+    setPreferences((current) => ({ ...current, cardLayout }));
+    setCardLayout(cardLayout).catch(() => setMessage('Could not save your preference.'));
+  }
+
   function handleReset() {
     Alert.alert(
       'Reset app data?',
@@ -43,7 +60,7 @@ export default function SettingsScreen({ navigation }) {
           style: 'destructive',
           onPress: async () => {
             await resetPreferences();
-            setPreferences({ darkTheme: false });
+            setPreferences(defaultPreferences);
             setMessage('App data reset.');
           },
         },
@@ -79,6 +96,14 @@ export default function SettingsScreen({ navigation }) {
             onChange={changeDarkTheme}
             title="Dark theme"
             value={preferences.darkTheme}
+          />
+          <View style={styles.divider} />
+          <SettingRow
+            description="Show more events on screen at once"
+            icon="view-agenda-outline"
+            onChange={changeCompactCards}
+            title="Compact event cards"
+            value={preferences.cardLayout === CARD_LAYOUTS.compact}
           />
         </View>
 
