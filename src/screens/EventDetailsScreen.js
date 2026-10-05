@@ -111,7 +111,7 @@ export default function EventDetailsScreen({ navigation, route }) {
         <Text style={styles.sectionTitle}>About this event</Text>
         <Text style={styles.description}>{event.description}</Text>
         <View style={styles.tags}>
-          {event.tags.map((tag) => (
+          {(event.tags ?? []).map((tag) => (
             <Chip
               buttonStyle={styles.tag}
               key={tag}
