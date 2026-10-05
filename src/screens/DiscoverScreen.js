@@ -109,13 +109,13 @@ export default function DiscoverScreen({ navigation }) {
           />
         }
         refreshControl={<RefreshControl onRefresh={handleRefresh} refreshing={refreshing} />}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <EventCard
             event={item}
             initiallySaved={savedEventIds.includes(item.id)}
             onPress={() =>
               navigation.navigate('EventDetails', {
-                eventIndex: index,
+                eventId: item.id,
                 source: 'Discover',
               })
             }
