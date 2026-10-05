@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import { seedEvents } from '../data/seedEvents';
+import { DATABASE_VERSION } from './migrations';
 
 const DATABASE_NAME = 'maizemeet.db';
 
@@ -57,6 +58,20 @@ export async function initializeDatabase() {
     WHERE rowId NOT IN (SELECT MIN(rowId) FROM events GROUP BY id);
     CREATE UNIQUE INDEX IF NOT EXISTS events_id_unique ON events (id);
   `);
+
+  const { user_version: currentVersion } = await db.getFirstAsync('PRAGMA user_version');
+  if (currentVersion < DATABASE_VERSION) {
+    await db.execAsync(`
+      DELETE FROM events
+      WHERE rowId NOT IN (
+        SELECT MIN(rowId)
+        FROM events
+        GROUP BY id
+      );
+      CREATE UNIQUE INDEX IF NOT EXISTS events_id_unique ON events(id);
+      PRAGMA user_version = ${DATABASE_VERSION};
+    `);
+  }
 
   for (const event of seedEvents) {
     await db.runAsync(
