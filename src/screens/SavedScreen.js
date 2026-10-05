@@ -18,9 +18,9 @@ export default function SavedScreen({ navigation }) {
     getSavedEvents()
       .then(setEvents)
       .finally(() => setLoading(false));
-  }, []);
+  }, [savedEventIds]);
 
-  const displayedEvents = events.sort(
+  const displayedEvents = [...events].sort(
     (left, right) => new Date(left.startsAt) - new Date(right.startsAt)
   );
 
@@ -48,7 +48,7 @@ export default function SavedScreen({ navigation }) {
         renderItem={({ item }) => (
           <EventCard
             event={item}
-            initiallySaved={savedEventIds.includes(item.id)}
+            saved={savedEventIds.includes(item.id)}
             onPress={() => navigation.navigate('EventDetails', { eventId: item.id })}
             onToggleSaved={toggleSaved}
           />
