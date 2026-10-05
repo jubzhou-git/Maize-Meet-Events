@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Card, Text } from '@rneui/themed';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatEventDate, formatEventTime } from '../utils/date';
 import { colors } from '../theme/theme';
 
-export default function EventCard({ event, initiallySaved, onPress, onToggleSaved }) {
-  const [saved, setSaved] = useState(initiallySaved);
-
-  async function handleSavedPress() {
-    setSaved((current) => !current);
-    const next = await onToggleSaved(event.id);
-    setSaved(next);
+export default function EventCard({ event, saved, onPress, onToggleSaved }) {
+  function handleSavedPress() {
+    onToggleSaved(event.id);
   }
 
   return (

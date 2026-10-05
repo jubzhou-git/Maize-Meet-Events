@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -22,7 +22,7 @@ const icons = {
 
 function MainTabs() {
   const { savedEventIds } = useAppContext();
-  const [savedCount] = useState(savedEventIds.length);
+  const savedCount = savedEventIds.length;
 
   return (
     <Tabs.Navigator
