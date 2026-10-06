@@ -9,9 +9,38 @@ export const colors = {
   muted: '#66717C',
   border: '#DCE2E7',
   danger: '#B42318',
+  surface: '#FFFFFF',
+  surfaceAlt: '#EDF1F4',
+  badge: '#E4ECF5',
+  badgeText: '#23313D',
+  description: '#3E4A55',
+  placeholder: '#7B858E',
+  chipBorder: '#AAB4BE',
+  selectedText: '#FFFFFF',
+  heart: '#C6253D',
 };
 
-export const appTheme = createTheme({
+export const darkColors = {
+  maize: colors.maize,
+  blue: colors.maize,
+  blueLight: '#A8CCE9',
+  cream: '#101820',
+  ink: '#F7F4ED',
+  muted: '#B2BEC8',
+  border: '#35485A',
+  danger: '#FF8A80',
+  surface: '#17212B',
+  surfaceAlt: '#253443',
+  badge: '#253443',
+  badgeText: '#F7F4ED',
+  description: '#D2DCE4',
+  placeholder: '#AAB5BF',
+  chipBorder: '#71879A',
+  selectedText: '#101820',
+  heart: '#FF7185',
+};
+
+const themeOptions = {
   lightColors: {
     primary: colors.blue,
     secondary: colors.maize,
@@ -24,15 +53,14 @@ export const appTheme = createTheme({
   },
   darkColors: {
     primary: colors.maize,
-    secondary: colors.blueLight,
-    background: '#101820',
-    white: '#17212B',
-    black: '#F7F4ED',
-    grey0: '#F7F4ED',
-    grey3: '#66717C',
-    grey5: '#253443',
+    secondary: darkColors.blueLight,
+    background: darkColors.cream,
+    white: darkColors.surface,
+    black: darkColors.ink,
+    grey0: darkColors.ink,
+    grey3: darkColors.muted,
+    grey5: darkColors.border,
   },
-  mode: 'light',
   components: {
     Button: {
       radius: 10,
@@ -46,4 +74,7 @@ export const appTheme = createTheme({
       },
     },
   },
-});
+};
+
+export const appTheme = createTheme({ ...themeOptions, mode: 'light' });
+export const darkAppTheme = createTheme({ ...themeOptions, mode: 'dark' });

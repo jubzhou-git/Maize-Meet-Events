@@ -13,7 +13,8 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { AppContextProvider, useAppContext } from './src/context/AppContext';
 import { initializeDatabase } from './src/db/database';
 import { restoreSession } from './src/services/session';
-import { appTheme, colors } from './src/theme/theme';
+import { getPreferences } from './src/storage/preferences';
+import { appTheme, darkAppTheme, colors } from './src/theme/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -32,11 +33,13 @@ function AppContent({ initialSession }) {
   return (
     <>
       <StatusBar style={preferences.darkTheme ? 'light' : 'dark'} />
-      <NavigationContainer
-        theme={preferences.darkTheme ? darkNavigationTheme : NavigationDefaultTheme}
-      >
-        <AppNavigator initialSession={initialSession} />
-      </NavigationContainer>
+      <ThemeProvider theme={preferences.darkTheme ? darkAppTheme : appTheme}>
+        <NavigationContainer
+          theme={preferences.darkTheme ? darkNavigationTheme : NavigationDefaultTheme}
+        >
+          <AppNavigator initialSession={initialSession} />
+        </NavigationContainer>
+      </ThemeProvider>
     </>
   );
 }
@@ -44,10 +47,14 @@ function AppContent({ initialSession }) {
 export default function App() {
   const [ready, setReady] = useState(false);
   const [initialSession, setInitialSession] = useState(null);
+  const [initialPreferences, setInitialPreferences] = useState({ darkTheme: false });
 
   useEffect(() => {
-    Promise.all([initializeDatabase(), restoreSession()])
-      .then(([, session]) => setInitialSession(session))
+    Promise.all([initializeDatabase(), restoreSession(), getPreferences()])
+      .then(([, session, preferences]) => {
+        setInitialSession(session);
+        setInitialPreferences(preferences);
+      })
       .finally(() => {
         setReady(true);
         SplashScreen.hideAsync().catch(() => {});
@@ -64,11 +71,9 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <ThemeProvider theme={appTheme}>
-        <AppContextProvider initialSession={initialSession}>
-          <AppContent initialSession={initialSession} />
-        </AppContextProvider>
-      </ThemeProvider>
+      <AppContextProvider initialSession={initialSession} initialPreferences={initialPreferences}>
+        <AppContent initialSession={initialSession} />
+      </AppContextProvider>
     </SafeAreaProvider>
   );
 }

@@ -1,21 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getEvents, getSavedEventIds, toggleSavedEvent } from '../db/database';
-import { getPreferences } from '../storage/preferences';
+import { colors, darkColors } from '../theme/theme';
 
 const AppContext = createContext(null);
 
-export function AppContextProvider({ children, initialSession }) {
+export function AppContextProvider({ children, initialSession, initialPreferences }) {
   const [session, setSession] = useState(initialSession);
   const [events, setEvents] = useState([]);
   const [savedEventIds, setSavedEventIds] = useState([]);
-  const [preferences, setPreferences] = useState({
-    darkTheme: false,
-  });
+  const [preferences, setPreferences] = useState(initialPreferences);
 
   useEffect(() => {
     getEvents().then(setEvents);
     getSavedEventIds().then(setSavedEventIds);
-    getPreferences().then(setPreferences);
   }, []);
 
   async function toggleSaved(eventId) {
@@ -46,4 +43,9 @@ export function useAppContext() {
     throw new Error('useAppContext must be used inside AppContextProvider');
   }
   return context;
+}
+
+export function useAppColors() {
+  const { preferences } = useAppContext();
+  return preferences.darkTheme ? darkColors : colors;
 }
